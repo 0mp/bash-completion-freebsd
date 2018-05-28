@@ -1,5 +1,7 @@
 # Bash completion for FreeBSD
 
+![Latest tag.](https://img.shields.io/github/tag/0mp/bash-completion-freebsd.svg)
+
 ## Installation
 
 ```console
