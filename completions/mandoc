@@ -1,0 +1,63 @@
+# vim: filetype=sh
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+# Copyright (c) 2018 Mateusz Piotrowski <0mp@FreeBSD.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#     1. Redistributions of source code must retain the above copyright notice,
+#        this list of conditions and the following disclaimer.
+#     2. Redistributions in binary form must reproduce the above copyright
+#        notice, this list of conditions and the following disclaimer in the
+#        documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+_mandoc() {
+    local cur prev words cword
+    _init_completion || return
+
+    # TODO: Add man(1) and apropos(1) flags, which are supported by mandoc(1).
+    local flags=(-a -c -I -K -mdoc -man -O -T -W)
+
+    case $prev in
+        -I)
+            compopt -o nospace
+            COMPREPLY+=($(compgen -W 'os=' -- "$cur"))
+            ;;
+        -K)
+            COMPREPLY+=($(compgen -W ' us-ascii iso-8859-1 utf-8' -- "$cur"))
+            ;;
+        -O)
+            # TODO
+            ;;
+        -T)
+            COMPREPLY+=($(compgen -W 'ascii html lint locale man markdown pdf ps tree utf8' -- "$cur"))
+            ;;
+        -W)
+            COMPREPLY+=($(compgen -W 'all base style warning error unsupp stop' -- "$cur"))
+            ;;
+        *)
+            if [[ $cur == -* ]]; then
+                COMPREPLY+=($(compgen -W "${flags[*]}" -- "$cur"))
+            fi
+
+            # XXX: This is probably not an exhaustive list.
+            COMPREPLY+=($(compgen -G "*.[0-9lnp]" -- "$cur"))
+            COMPREPLY+=($(compgen -G "*.[0-9][px]" -- "$cur"))
+            ;;
+    esac
+} &&
+complete -F _mandoc mandoc
