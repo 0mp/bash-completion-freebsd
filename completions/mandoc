@@ -29,6 +29,8 @@ _mandoc() {
     local cur prev words cword
     _init_completion || return
 
+    local suggestions=()
+
     # TODO: Add man(1) and apropos(1) flags, which are supported by mandoc(1).
     local flags=(-a -c -I -K -mdoc -man -O -T -W)
 
@@ -44,15 +46,22 @@ _mandoc() {
             # TODO
             ;;
         -T)
-            COMPREPLY+=($(compgen -W 'ascii html lint locale man markdown pdf ps tree utf8' -- "$cur"))
+            suggestions=({ascii,html,lint,locale,man,markdown,pdf,ps,tree,utf8})
+            COMPREPLY+=($(compgen -W "${suggestions[*]}" -- "$cur"))
             ;;
         -W)
             COMPREPLY+=($(compgen -W 'all base style warning error unsupp stop' -- "$cur"))
             ;;
         *)
-            if [[ $cur == -* ]]; then
-                COMPREPLY+=($(compgen -W "${flags[*]}" -- "$cur"))
-            fi
+            case $cur in
+                -T)
+                    suggestions=('-T'{ascii,html,lint,locale,man,markdown,pdf,ps,tree,utf8})
+                    COMPREPLY+=($(compgen -W "${suggestions[*]}" -- "$cur"))
+                    ;;
+                -*)
+                    COMPREPLY+=($(compgen -W "${flags[*]}" -- "$cur"))
+                    ;;
+            esac
 
             # XXX: This is probably not an exhaustive list.
             COMPREPLY+=($(compgen -G "*.[0-9lnp]" -- "$cur"))
