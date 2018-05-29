@@ -2,9 +2,12 @@
 
 ![Latest tag.](https://img.shields.io/github/tag/0mp/bash-completion-freebsd.svg)
 
-## Implemented completions
+## Covered software
+
+Bash completion functions are available for the following utilities
 
 - [mandoc(1)](https://www.freebsd.org/cgi/man.cgi?mandoc)
+- [pkg(8)](https://www.freebsd.org/cgi/man.cgi?pkg)
 - [service(8)](https://www.freebsd.org/cgi/man.cgi?service)
 
 ## Installation
