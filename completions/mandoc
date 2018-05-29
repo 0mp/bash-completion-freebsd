@@ -29,10 +29,10 @@ _mandoc() {
     local cur prev words cword
     _init_completion || return
 
-    local suggestions=()
-
     # TODO: Add man(1) and apropos(1) flags, which are supported by mandoc(1).
     local flags=(-a -c -I -K -mdoc -man -O -T -W)
+
+    local outputformats=(ascii html lint locale man markdown pdf ps tree utf8)
 
     case $prev in
         -I)
@@ -46,17 +46,16 @@ _mandoc() {
             # TODO
             ;;
         -T)
-            suggestions=({ascii,html,lint,locale,man,markdown,pdf,ps,tree,utf8})
-            COMPREPLY+=($(compgen -W "${suggestions[*]}" -- "$cur"))
+            COMPREPLY+=($(compgen -W "${outputformats[*]}" -- "$cur"))
             ;;
         -W)
             COMPREPLY+=($(compgen -W 'all base style warning error unsupp stop' -- "$cur"))
             ;;
         *)
             case $cur in
-                -T)
-                    suggestions=('-T'{ascii,html,lint,locale,man,markdown,pdf,ps,tree,utf8})
-                    COMPREPLY+=($(compgen -W "${suggestions[*]}" -- "$cur"))
+                -T*)
+                    outputformats=($(compgen -P '-T' -W "${outputformats[*]}"))
+                    COMPREPLY+=($(compgen -W "${outputformats[*]}" -- "$cur"))
                     ;;
                 -*)
                     COMPREPLY+=($(compgen -W "${flags[*]}" -- "$cur"))
@@ -64,8 +63,11 @@ _mandoc() {
             esac
 
             # XXX: This is probably not an exhaustive list.
-            COMPREPLY+=($(compgen -G "*.[0-9lnp]" -- "$cur"))
-            COMPREPLY+=($(compgen -G "*.[0-9][px]" -- "$cur"))
+            COMPREPLY+=($(compgen -G "*.[0-9lnp]"))
+            COMPREPLY+=($(compgen -G "*.[0-9][px]"))
+            # XXX: We cannot remove non-matching suggestions in one step
+            # because "-G globpattern" does not seem to be able to handle it.
+            COMPREPLY=($(compgen -W "${COMPREPLY[*]}" -- "$cur"))
             ;;
     esac
 } &&
