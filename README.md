@@ -6,6 +6,7 @@
 
 Bash completion functions are available for the following utilities
 
+- [make(1)](https://www.freebsd.org/cgi/man.cgi?make) (*work in progress; not installed by default*)
 - [mandoc(1)](https://www.freebsd.org/cgi/man.cgi?mandoc)
 - [pkg(8)](https://www.freebsd.org/cgi/man.cgi?pkg)
 - [service(8)](https://www.freebsd.org/cgi/man.cgi?service)

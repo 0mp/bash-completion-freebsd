@@ -1,0 +1,100 @@
+# vim: filetype=sh
+#
+# SPDX-License-Identifier: BSD-2-Clause
+#
+# Copyright (c) 2018 Mateusz Piotrowski <0mp@FreeBSD.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#     1. Redistributions of source code must retain the above copyright notice,
+#        this list of conditions and the following disclaimer.
+#     2. Redistributions in binary form must reproduce the above copyright
+#        notice, this list of conditions and the following disclaimer in the
+#        documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+# ---
+# TODO: Handle multiple -C options. See make(1) for details.
+
+_make() {
+    local cur prev words cword
+    _init_completion || return
+
+    # -J is omitted as it is not intended for interactive usage.
+    local flags=(-B -e -i -k -N -n -q -r -s -t -W -w -X -C -D -d -f -I -J -j -m -T -V -v)
+
+    case $prev in
+        -C) ;&
+        -I) ;&
+        -m)
+            _filedir -d
+            ;;
+        -D) ;;
+        -d) # TODO
+            ;;
+        -f)
+            _filedir
+            if [[ -z $cur || $cur == - ]]; then
+                COMPREPLY+=(-)
+            fi
+            ;;
+        -j)
+            COMPREPLY+=($(compgen -W "$(seq 1 $(sysctl -n hw.ncpu))" -- "$cur"))
+            ;;
+        -m)
+            # TODO: Handle ".../".
+            _filedir -d
+            ;;
+        -T)
+            _filedir
+            ;;
+        -V) ;;
+        -v) ;;
+        -*)
+            if [[ $cur == -* ]]; then
+                COMPREPLY+=($(compgen -W "${flags[*]}" -- "$cur"))
+            else
+                :
+            fi
+            ;;
+        *)
+            if [[ $cur == -* ]]; then
+                COMPREPLY+=($(compgen -W "${flags[*]}" -- "$cur"))
+            fi
+
+            # Determine, which makefile has been chosen by the user. Take the
+            # last makefile specified with the -f option. If -f wasn't used
+            # then fall back to "makefile" and "Makefile".
+            local i
+            local makefile
+            for ((i=cword; i >= 0; i--)); do
+                if [[ ${words["$i"]} == -f ]]; then
+                    makefile="${words[((i + 1))]}"
+                    break
+                fi
+            done
+            [[ -r makefile ]] && : "${makefile:=makefile}"
+            [[ -r Makefile ]] && : "${makefile:=Makefile}"
+
+            # Extract targets from the makefile.
+            if [[ -r $makefile ]]; then
+                # TODO: This could be improved but it should work for simple makefiles.
+                COMPREPLY+=($(compgen -W "$(exec awk -v FS=':|!|::|[[:space:]]' \
+                    '/^$/{next} /^[\t.#]/{next} /=/{next} {if ($1 !~ ".*[$].*") {print $1}}' \
+                    "$makefile")" -- "$cur"))
+            fi
+            ;;
+    esac
+} &&
+complete -F _make make
