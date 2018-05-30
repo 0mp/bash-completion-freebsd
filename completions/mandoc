@@ -62,12 +62,13 @@ _mandoc() {
                     ;;
             esac
 
+            # Complete directories just in case someone wants to pass a file
+            # from a different directory.
+            _filedir -d
+
             # XXX: This is probably not an exhaustive list.
-            COMPREPLY+=($(compgen -G "*.[0-9lnp]"))
-            COMPREPLY+=($(compgen -G "*.[0-9][px]"))
-            # XXX: We cannot remove non-matching suggestions in one step
-            # because "-G globpattern" does not seem to be able to handle it.
-            COMPREPLY=($(compgen -W "${COMPREPLY[*]}" -- "$cur"))
+            COMPREPLY+=($(compgen -G "$cur*.[0-9lnp]"))
+            COMPREPLY+=($(compgen -G "$cur*.[0-9][px]"))
             ;;
     esac
 } &&
