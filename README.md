@@ -23,7 +23,7 @@ Bash completion functions are available for the following utilities
 
 ## Caveats
 
-Although the [pkg upstream](https://github.com/freebsd/pkg) ship some Bash
+Although the [pkg upstream](https://github.com/freebsd/pkg) ships some Bash
 completion for pkg(8) it does not conflict with our implementation of the
 pkg(8) completion. The reason is that the upstream completion file is installed
 into `/usr/local/etc/bash_completion.d/` while our completion is installed into
