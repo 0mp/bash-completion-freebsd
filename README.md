@@ -2,6 +2,10 @@
 
 ![Latest tag.](https://img.shields.io/github/tag/0mp/bash-completion-freebsd.svg)
 
+*Those completion scripts are going to be added to the
+[bash-completion port](https://www.freshports.org/shells/bash-completion/) and
+installed by default. It should happen in the next couple of days.*
+
 ## Covered software
 
 Bash completion functions are available for the following utilities
