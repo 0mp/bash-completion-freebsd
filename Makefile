@@ -1,5 +1,5 @@
 PREFIX ?= /usr/local
-COMPLETIONSDIR=	"${DESTDIR}${PREFIX}/etc/bash-completion.d"
+COMPLETIONSDIR=	"${DESTDIR}${PREFIX}/etc/bash_completion.d"
 
 install:
 	@mkdir -p "${COMPLETIONSDIR}"
