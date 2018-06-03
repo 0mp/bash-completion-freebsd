@@ -1,11 +1,12 @@
 PREFIX ?= /usr/local
+COMPLETIONSDIR=	"${DESTDIR}${PREFIX}/etc/bash-completion.d"
 
 install:
-	@mkdir -p "${DESTDIR}${PREFIX}/share/bash-completion/completions"
+	@mkdir -p "${COMPLETIONSDIR}"
 	install -m 0644 \
 		completions/mandoc \
 		completions/pkg \
 		completions/service \
-		"${DESTDIR}${PREFIX}/share/bash-completion/completions"
+		"${COMPLETIONSDIR}"
 
 .PHONY: install
