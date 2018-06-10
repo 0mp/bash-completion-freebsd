@@ -2,10 +2,6 @@
 
 ![Latest tag.](https://img.shields.io/github/tag/0mp/bash-completion-freebsd.svg)
 
-*Those completion scripts are going to be added to the
-[bash-completion port](https://www.freshports.org/shells/bash-completion/) and
-installed by default. It should happen in the next couple of days.*
-
 ## Covered software
 
 Bash completion functions are available for the following utilities
@@ -16,6 +12,16 @@ Bash completion functions are available for the following utilities
 - [service(8)](https://www.freebsd.org/cgi/man.cgi?service)
 
 ## Installation
+
+Those additional Bash completion files are installed by default with the
+[bash-completion port](https://www.freshports.org/shells/bash-completion/):
+
+```console
+# pkg instal bash-completion
+```
+
+If you're willing to install to install this extension manually then set
+`DISTDIR` and `PREFIX` to match your configuration and run:
 
 ```console
 # make install
