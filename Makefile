@@ -1,4 +1,4 @@
-PREFIX ?= /usr/local
+PREFIX?=	/usr/local
 COMPLETIONSDIR=	${DESTDIR}${PREFIX}/etc/bash_completion.d
 
 install:
