@@ -22,7 +22,7 @@ Those additional Bash completion files are installed by default with the [bash-c
 # pkg instal bash-completion
 ```
 
-If you're willing to install to install this extension manually then set `DISTDIR` and `PREFIX` to match your configuration and run:
+If you're willing to install to install this extension manually then set `DESTDIR` and `PREFIX` to match your configuration and run:
 
 ```console
 # make install
