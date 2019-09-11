@@ -89,10 +89,7 @@ _make() {
 
             # Extract targets from the makefile.
             if [[ -r $makefile ]]; then
-                # TODO: This could be improved but it should work for simple makefiles.
-                COMPREPLY+=($(compgen -W "$(exec awk -v FS=':|!|::|[[:space:]]' \
-                    '/^$/{next} /^[\t.#]/{next} /=/{next} {if ($1 !~ ".*[$].*") {print $1}}' \
-                    "$makefile")" -- "$cur"))
+                COMPREPLY+=($(compgen -W "$(make -V .ALLTARGETS)" -- "$cur"))
             fi
             ;;
     esac
