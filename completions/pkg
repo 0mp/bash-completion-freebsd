@@ -154,12 +154,7 @@ _pkg()
                         -q --quiet
                         ' -- "$cur"))
                 else
-                    COMPREPLY=($(compgen -f -- "$cur"))
-                    # "-" is for stdin.
-                    COMPREPLY+=($(compgen -W '-' -- "$cur"))
-                    # XXX: Do not print space after "protocol://".
-                    # XXX: Do we even want to autocomplete protocols?
-                    COMPREPLY+=($(compgen -S '://' -W 'ftp http https' -- "$cur"))
+                    compopt -o default
                 fi
                 ;;
 
