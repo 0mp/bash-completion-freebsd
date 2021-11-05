@@ -341,7 +341,26 @@ _pkg()
                 ;;
 
             delete)
-                # TODO
+                # TODO: Some options are mutually exclusive. It might be nice
+                # to make this completion logic aware of this fact. At the
+                # moment it just completes all the options.
+		if [[ $cur == -* ]]; then
+			COMPREPLY=($(compgen -W '
+			-a --all
+			-C --case-sensitive
+			-D --no-scripts
+			-f --force
+			-g --glob
+			-i --case-insensitive
+			-n --dry-run
+			-q --quiet
+			-R --recursive
+			-x --regex
+			-y --yes
+			' -- "$cur"))
+		else
+			_pkg_complete_installed_package
+		fi
                 ;;
 
             fetch)
