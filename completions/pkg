@@ -89,6 +89,13 @@ _pkg()
         plugins query register repo rquery search set shell shlib stats
         unlock update updating upgrade version which)
 
+    local -A alias_map
+    local _alias _command
+    while read _alias _command _; do
+        alias_map["$_alias"]="${_command//\'}"
+    done < <(pkg alias -q)
+    command_list+=("${!alias_map[@]}")
+
     local raw_output_formats=(json json-compact yaml)
 
     local option_with_arg_list=(-C --config -c --chroot -r --rootdir -o --options -j --jail)
@@ -100,7 +107,10 @@ _pkg()
     local i
     for (( i=0 ; i < "${#words[@]}" ; i++ )); do
         word="${words[$i]}"
-        if [[ $word =~ $pipe_separated_command_list ]]; then
+        if [[ -n "$word" && -n "${alias_map["$word"]}" ]]; then
+            word="${alias_map["$word"]}"
+        fi
+        if [[ $word =~ ^($pipe_separated_command_list)$ ]]; then
             if [[ $i -gt 0 ]] && [[ ${words[$(( i - 1 ))]} =~ $pipe_separated_option_with_arg_list ]]; then
                 continue
             else
