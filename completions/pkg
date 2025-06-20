@@ -347,7 +347,9 @@ _pkg()
                 ;;
 
             create)
-                # TODO
+                # TODO: This implementation covers only a subset of
+                # pkg-create(8)'s functionality.
+                _pkg_complete_installed_package
                 ;;
 
             delete)
