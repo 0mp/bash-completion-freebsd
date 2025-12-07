@@ -84,7 +84,7 @@ _pkg()
     local cur prev words cword
     _init_completion || return
 
-    readarray command_list < <(pkg -l)
+    readarray -t command_list < <(pkg -l)
 
     local -A alias_map
     local _alias _command
