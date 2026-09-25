@@ -1,0 +1,78 @@
+# vim: filetype=bash
+#
+# SPDX-FileCopyrightText: 2026 Mateusz Piotrowski <0mp@FreeBSD.org>
+# SPDX-License-Identifier: BSD-2-Clause
+# ---
+# Version: 0.1.0
+
+_comp_cmd_mdo() {
+    local cur prev words cword comp_args
+    _comp_initialize -- "$@" || return
+
+    local flags_user=(
+        --euid
+        --ruid
+        --svuid
+        -u
+    )
+    local flags_group=(
+        --egid
+        --rgid
+        --svgid
+    )
+    local flags_onearg=(
+        -G
+        -g
+    )
+    local flags_noarg=(
+        -h
+        -i
+        -k
+        -s
+    )
+    local flags_all=(
+        "${flags_user[@]}"
+        "${flags_group[@]}"
+        "${flags_onearg[@]}"
+        "${flags_noarg[@]}"
+        --
+    )
+
+    local i=1 action
+    while (( i < cword )); do
+        case ${words[i]} in
+            @($(IFS='|'; echo "${flags_user[*]}"))) action=user ;;
+            @($(IFS='|'; echo "${flags_group[*]}"))) action=group ;;
+            @($(IFS='|'; echo "${flags_onearg[*]}"))) action=none ;;
+            @($(IFS='|'; echo "${flags_noarg[*]}")))
+                (( i += 1 ))
+                continue
+                ;;
+            --)
+                _comp_command_offset "$((i + 1))"
+                return
+                ;;
+            *)
+                _comp_command_offset "$i"
+                return
+                ;;
+        esac
+
+        if (( i + 1 == cword )); then
+            case $action in
+                user)  _comp_compgen -- -u ;;
+                group) _comp_compgen -- -g ;;
+            esac
+            return
+        fi
+
+        (( i += 2 ))
+    done
+
+    if [[ $cur == -* ]]; then
+        _comp_compgen -- -W "${flags_all[*]}"
+    else
+        _comp_command_offset "$i"
+    fi
+} &&
+complete -F _comp_cmd_mdo mdo
