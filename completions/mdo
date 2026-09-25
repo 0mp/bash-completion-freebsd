@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: 2026 Mateusz Piotrowski <0mp@FreeBSD.org>
 # SPDX-License-Identifier: BSD-2-Clause
 # ---
-# Version: 0.1.0
+# Version: 0.1.1
 
 _comp_cmd_mdo() {
     local cur prev words cword comp_args
@@ -19,16 +19,16 @@ _comp_cmd_mdo() {
         --egid
         --rgid
         --svgid
+        -g
     )
     local flags_onearg=(
         -G
-        -g
+        -s
     )
     local flags_noarg=(
         -h
         -i
         -k
-        -s
     )
     local flags_all=(
         "${flags_user[@]}"
